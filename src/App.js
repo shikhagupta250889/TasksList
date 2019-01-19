@@ -1,4 +1,6 @@
 import React from 'react';
+import TaskList from './components/TaskList/';
+import ToDo from './components/ToDO/';
 import { loadState, saveState} from './utils';
 
 export default class App extends React.Component {
@@ -9,19 +11,18 @@ export default class App extends React.Component {
       state = {
         toDoText: '',
         items: [],
-        itemsHeading: this.props.heading,
       };
     }
     this.state = state;
   }
 
-  onSave() {
+  onSave = () => {
     var { toDoText, items } = this.state;
     var todo = { itemValue: this.state.toDoText, done: false, id: items.length+1, className: '' };
     items.push(todo);
     toDoText = '';
     //savestate is called only after the setState is completed.
-    this.setState({ toDoText, items, itemsHeading: 'Pending Items' }, this.onSaveState);
+    this.setState({ toDoText, items}, this.onSaveState);
   }
 
   onInput = e => {
@@ -49,36 +50,18 @@ export default class App extends React.Component {
   }
 
   onRemove = id => {
-    let { items, itemsHeading } = this.state;
+    let { items } = this.state;
     items = items.filter(item => item.id !== id);
-    if (!items.length) { itemsHeading = this.props.heading; }
-    this.setState({ items, itemsHeading }, this.onSaveState);
+    this.setState({ items }, this.onSaveState);
   }
 
   render() {
-    const styleCross = {
-      cursor: 'pointer',
-      fontWeight: 'bold'
-    };
+    const { toDoText, items } = this.state;
       return (
-        <div>
-          <h1>TODO</h1>
-          What to Do? <br/>
-          <input type='text' value={this.state.toDoText}
-            onChange={this.onInput} onKeyPress={this.onEnter} />
-          &nbsp;<button onClick={() => this.onSave()}>Save</button>
-          <br/><br/>
-          <div>{this.state.itemsHeading}</div>
-          <ul> {this.state.items.map(item => {
-              return (
-                <li key={'li'+item.id} className={item.className}>{item.itemValue}
-                  <input type='checkbox' checked={item.done} onChange={ e => this.onStatusChange(item.id) }/>
-                  <font style={styleCross} color='red' onClick={ e => this.onRemove(item.id) }>X</font>
-                </li>
-              );
-            }
-          )} </ul>
-        </div>
+          <ToDo toDoText={toDoText} itemsLength={items.length > 0}
+            onChange={this.onInput} onKeyPress={this.onEnter} onClick={this.onSave}>
+            <TaskList items={items} onStatusChange={this.onStatusChange} onRemove={this.onRemove} />
+          </ToDo>
       );
   }
 }
