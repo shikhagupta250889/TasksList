@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { FormControl } from 'react-bootstrap';
 // import EmptyContainer from '../Auxilliary/';
 
 export default function ToDo(props) {
@@ -8,7 +9,13 @@ export default function ToDo(props) {
   	<Fragment>
       <h1>TODO Items Checklist</h1>
       What to Do? <br/>
-      <input type='text' value={toDoText} onChange={onChange} onKeyPress={onKeyPress} />
+      <FormControl
+        type='text'
+        value={toDoText}
+        placeholder='Enter task'
+        onChange={onChange}
+        onKeyPress={onKeyPress}
+      />
       &nbsp;<button onClick={onClick}>Save</button>
       <br/><br/>
       { !itemsLength && <div>No Items in the List</div> }
